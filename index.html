@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SACO Service</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial; background:#f5f5f5; margin:0; }
+    header { background:#111; color:white; padding:15px; }
+    .container { padding:20px; }
+    input, select, button { padding:10px; margin:5px 0; width:100%; }
+    .card { background:white; padding:15px; margin-top:10px; border-radius:10px; }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>SACO Service</h2>
+</header>
+
+<div class="container">
+
+<h3>Login</h3>
+<input id="email" placeholder="Inserisci email">
+<button onclick="login()">Entra</button>
+
+<div id="app" style="display:none;">
+
+<h3>Nuovo Lavoro</h3>
+<input id="cliente" placeholder="Cliente">
+<input id="indirizzo" placeholder="Indirizzo">
+<input id="data" type="date">
+<select id="tipo">
+  <option>Montaggio</option>
+  <option>Assistenza</option>
+</select>
+<button onclick="addLavoro()">Aggiungi</button>
+
+<h3>Lavori</h3>
+<div id="lista"></div>
+
+</div>
+
+</div>
+
+<script>
+
+let autorizzati = ["info@sacoservice.it"];
+
+function login(){
+  let email = document.getElementById("email").value;
+  if(autorizzati.includes(email)){
+    document.getElementById("app").style.display = "block";
+  } else {
+    alert("Email non autorizzata");
+  }
+}
+
+function addLavoro(){
+  let cliente = document.getElementById("cliente").value;
+  let indirizzo = document.getElementById("indirizzo").value;
+  let data = document.getElementById("data").value;
+  let tipo = document.getElementById("tipo").value;
+
+  let lavoro = `<div class='card'>
+    <b>${cliente}</b><br>
+    ${indirizzo}<br>
+    ${data} - ${tipo}
+  </div>`;
+
+  document.getElementById("lista").innerHTML += lavoro;
+}
+
+</script>
+
+</body>
+</html>
