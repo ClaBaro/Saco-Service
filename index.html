@@ -1,74 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-  <title>SACO Service</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: Arial; background:#f5f5f5; margin:0; }
-    header { background:#111; color:white; padding:15px; }
-    .container { padding:20px; }
-    input, select, button { padding:10px; margin:5px 0; width:100%; }
-    .card { background:white; padding:15px; margin-top:10px; border-radius:10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SACO Service</title>
+
+<style>
+body {margin:0;font-family:Arial;background:#f3f3f3;}
+.topbar {background:#34495a;color:white;padding:15px;text-align:center;font-size:20px;}
+.container {padding:15px;}
+input, select, textarea {width:100%;padding:10px;margin:5px 0;}
+button {padding:10px;background:#ff9800;color:white;border:0;}
+.card {background:white;padding:10px;margin-top:10px;border-radius:8px;}
+.bottom {position:fixed;bottom:0;width:100%;background:#34495a;color:#ff9800;display:flex;justify-content:space-around;padding:10px;}
+.hidden {display:none;}
+</style>
 </head>
 
 <body>
 
-<header>
-  <h2>SACO Service</h2>
-</header>
+<div class="topbar">SACO Service</div>
 
 <div class="container">
 
+<div id="login">
 <h3>Login</h3>
-<input id="email" placeholder="Inserisci email">
+<input id="email" placeholder="Email">
 <button onclick="login()">Entra</button>
+</div>
 
-<div id="app" style="display:none;">
+<div id="app" class="hidden">
 
-<h3>Nuovo Lavoro</h3>
+<h3>Nuovo intervento</h3>
+
 <input id="cliente" placeholder="Cliente">
-<input id="indirizzo" placeholder="Indirizzo">
 <input id="data" type="date">
-<select id="tipo">
-  <option>Montaggio</option>
-  <option>Assistenza</option>
-</select>
-<button onclick="addLavoro()">Aggiungi</button>
+<input id="ora" type="time">
 
-<h3>Lavori</h3>
+<select id="categoria">
+<option>Montaggio</option>
+<option>Assistenza</option>
+<option>Manutenzione</option>
+</select>
+
+<select id="stato">
+<option>Aperto</option>
+<option>In corso</option>
+<option>Completato</option>
+</select>
+
+<textarea id="note" placeholder="Note"></textarea>
+
+<input type="file" id="file" multiple>
+
+<button onclick="salva()">Salva</button>
+
+<h3>Interventi</h3>
 <div id="lista"></div>
 
 </div>
 
 </div>
 
+<div class="bottom">
+<button onclick="mostraForm()">Nuovo</button>
+<button onclick="carica()">Lista</button>
+</div>
+
 <script>
 
-let autorizzati = ["info@sacoservice.it"];
+let autorizzati = ["INSERISCI-LA-TUA-EMAIL@gmail.com"];
 
 function login(){
-  let email = document.getElementById("email").value;
-  if(autorizzati.includes(email)){
-    document.getElementById("app").style.display = "block";
-  } else {
-    alert("Email non autorizzata");
-  }
+let email = document.getElementById("email").value;
+if(autorizzati.includes(email)){
+document.getElementById("login").style.display="none";
+document.getElementById("app").classList.remove("hidden");
+carica();
+}else{
+alert("Email non autorizzata");
+}
 }
 
-function addLavoro(){
-  let cliente = document.getElementById("cliente").value;
-  let indirizzo = document.getElementById("indirizzo").value;
-  let data = document.getElementById("data").value;
-  let tipo = document.getElementById("tipo").value;
+function salva(){
 
-  let lavoro = `<div class='card'>
-    <b>${cliente}</b><br>
-    ${indirizzo}<br>
-    ${data} - ${tipo}
-  </div>`;
+let cliente = document.getElementById("cliente").value;
+let data = document.getElementById("data").value;
+let ora = document.getElementById("ora").value;
+let categoria = document.getElementById("categoria").value;
+let stato = document.getElementById("stato").value;
+let note = document.getElementById("note").value;
 
-  document.getElementById("lista").innerHTML += lavoro;
+let interventi = JSON.parse(localStorage.getItem("interventi") || "[]");
+
+interventi.push({cliente,data,ora,categoria,stato,note});
+
+localStorage.setItem("interventi", JSON.stringify(interventi));
+
+alert("Salvato!");
+carica();
+}
+
+function carica(){
+
+let lista = document.getElementById("lista");
+lista.innerHTML = "";
+
+let interventi = JSON.parse(localStorage.getItem("interventi") || "[]");
+
+interventi.forEach(i=>{
+lista.innerHTML += `
+<div class="card">
+<b>${i.cliente}</b><br>
+${i.data} ${i.ora}<br>
+${i.categoria} - ${i.stato}<br>
+${i.note}
+</div>`;
+});
+}
+
+function mostraForm(){
+window.scrollTo(0,0);
 }
 
 </script>
